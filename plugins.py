@@ -496,9 +496,11 @@ class HoughLineVertical:
 
 class OCR:
 
-	def settings_handler(self, pos, config=''):
-		self.mask = cv2.getTrackbarPos('OCR', 'Settings')
+	def __init__(self, config=''):
 		self.config = config
+
+	def settings_handler(self, pos):
+		self.mask = cv2.getTrackbarPos('OCR', 'Settings')
 
 	def start(self, parent):
 		cv2.namedWindow('Settings', cv2.WINDOW_NORMAL)
