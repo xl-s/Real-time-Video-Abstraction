@@ -5,7 +5,6 @@ from streamlink import streams as get_streams
 from threading import Thread
 from queue import Queue
 from time import time
-from datetime import datetime
 
 
 class Video:
@@ -67,6 +66,7 @@ class Video:
 	def start(self, capture=0, plugins=None):
 		self.video = cv2.VideoCapture(capture)
 		cv2.namedWindow(self.name, cv2.WINDOW_NORMAL)
+		self.last_frame_time = time()
 
 		if plugins: self.start_plugins(plugins)
 		self.plugins = plugins
@@ -149,7 +149,6 @@ class Stream(Video):
 		cv2.setMouseCallback(self.name, self.mouse_event_handler)
 		self.period = 1/self.frame_rate
 		self.last_frame_time = time()
-		self.time_start=datetime.now()
 
 		if plugins: self.start_plugins(plugins)
 		self.plugins = plugins
