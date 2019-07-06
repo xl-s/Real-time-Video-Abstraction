@@ -1,3 +1,5 @@
+**Update 6/7/19:** Added player health bar detection under `healthbar_detect.py`. This has been implemented as separate functions instead of plugins due to the computation time needed. See `healthbar_detect.py` for more information.
+
 **Update 5/7/19:** Tesseract and Pytesseract are now dependencies. However, they can be removed if not needed (see the last line of **Requirements**). Also added `constants.py`.
 
 **Update 3/7/19:** Removed redundant functions (`pre_processing`, `post_pocessing`, etc) from `Video` and `Stream` classes. Also removed `parent` parameter from `Plugin.run` for better optimization. Parent properties may still be accessed and changed with `Plugin.start`.
