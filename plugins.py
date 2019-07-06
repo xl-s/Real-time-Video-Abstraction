@@ -1,9 +1,12 @@
 import cv2
 import numpy as np
 import pytesseract
-
+from datetime import datetime
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
+def time_since_start(time_start):
+	time_diff=datetime.now()-time_start
+	return time_diff
 
 class Record:
 
@@ -14,6 +17,8 @@ class Record:
 		self.recording = False
 		self.width, self.height = 0, 0
 		self.frame_rate = parent.frame_rate
+		self.time_start=parent.time_start
+
 
 	def run(self, frame):
 		if not self.width or not self.height:
@@ -111,7 +116,7 @@ class EdgeDetect:
 		cv2.createTrackbar('ED Blue', 'Settings', 0, 1, self.settings_handler)
 		cv2.createTrackbar('ED Green', 'Settings', 0, 1, self.settings_handler)
 		cv2.createTrackbar('ED Red', 'Settings', 0, 1, self.settings_handler)
-		cv2.createTrackbar('ED Gray', 'Settings', 0, 1, self.settings_handler) 
+		cv2.createTrackbar('ED Gray', 'Settings', 0, 1, self.settings_handler)
 		self.thresh_lower = 100
 		self.thresh_upper = 200
 		self.mask_blue = 0
@@ -147,7 +152,7 @@ class EdgeDetect:
 			green_edges = self.get_canny(g)
 			mask += green_edges
 		if self.mask_gray:
-			if dims == 3: 
+			if dims == 3:
 				gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 			else:
 				gray = frame
@@ -178,9 +183,9 @@ class ColourFilter:
 
 	def run(self, frame):
 		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-		if self.mask: 
+		if self.mask:
 			mask = cv2.inRange(hsv, self.lower, self.upper)
-			if self.smooth: 
+			if self.smooth:
 				kernel = np.ones((self.smooth, self.smooth), np.uint8)
 				mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 			if self.invert: mask = cv2.bitwise_not(mask)
@@ -213,9 +218,9 @@ class ROIFilter:
 		if not self.width or not self.height:
 			self.height, self.width, _ = frame.shape
 
-		if self.mask: 
+		if self.mask:
 			roi = self.rois[self.mask-1]
-			frame = frame[int(roi[0,1]*self.height):int(roi[1,1]*self.height+1), 
+			frame = frame[int(roi[0,1]*self.height):int(roi[1,1]*self.height+1),
 						  int(roi[0,0]*self.width):int(roi[1,0]*self.width+1)]
 		else:
 			for roi in self.rois:
@@ -278,7 +283,7 @@ class BackgroundSubtractDirect:
 		if self.recency:
 			if len(self.images) > self.recency:
 				self.images = self.images[1:]
-		if self.count >= self.sample_period: 
+		if self.count >= self.sample_period:
 			self.images.append(image)
 			self.count = 0
 		else:
