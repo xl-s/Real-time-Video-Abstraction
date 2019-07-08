@@ -3,10 +3,43 @@ import numpy as np
 import pytesseract
 from datetime import datetime
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+percentage_significant_life=10 #in percent
+previous_health_percentage=-1 #initialize as -1
+frame_significance_health='not significant' #initialize as not significant
+frame_significance_gold='not significant'#initialize as not significant
+gold_significant=1000#change if needed
+previous_gold=-1
 
 def time_since_start(time_start):
 	time_diff=datetime.now()-time_start
 	return time_diff
+def significant_health_change(current,current_total,previous_health_percentage):
+	current_life_percentage=current/current_total
+	if previous_health_percentage==-1:#for initialize
+		frame_significance_health='not significant'
+	elif current_life_percentage-previous_health_percentage>percentage_significant_life:
+		frame_significance_health='significant'
+	else:
+		frame_significance_health='not significant'
+	return frame_significance_health,current_life_percentage
+
+
+def significant_gold_change(current_gold,previous_gold):
+	if previous_gold==-1:
+		frame_significance_gold='not significant'
+	elif previous_gold-current_gold>gold_significant:
+		frame_significance_gold='significant'
+	else:
+		frame_significance_gold='not significant'
+	return frame_significance_gold,current_gold
+
+def capture_frame_decider(frame_significance_health,frame_significance_gold):
+	if frame_significance_gold=='significant' or frame_significance_health=='significant':
+		print('capture frame')
+	else:
+		print('do not capture frame')
+
+
 
 class Record:
 
